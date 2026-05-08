@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Produktiflah — To-Do List Tim</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+  text-shadow: white -7px 31px 7px;
+}
+
+/* ========== VARIABEL TEMA ========== */
+:root {
+    /* Light Theme (default) */
+    --bg-gradient-start: #e0eafc;
+    --bg-gradient-end: #cfdef3;
+    --app-bg: rgba(255, 255, 255, 0.92);
+    --app-blur: blur(6px);
+    --header-bg: rgba(255, 255, 255, 0.98);
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --card-bg: white;
+    --card-border: #f0f2f5;
+    --card-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.08);
+    --filter-bar-bg: white;
+    --filter-border: #e2e8f0;
+    --btn-icon-bg: #f1f5f9;
+    --btn-icon-hover: #e2e8f0;
+    --footer-bg: rgba(255, 255, 255, 0.7);
+    --modal-bg: white;
+    --stat-card-bg: white;
+    --progress-bg: #e2e8f0;
+}
+
+body.dark {
+    --bg-gradient-start: #0f172a;
+    --bg-gradient-end: #1e293b;
+    --app-bg: rgba(15, 23, 42, 0.94);
+    --app-blur: blur(8px);
+    --header-bg: rgba(30, 41, 59, 0.95);
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --card-bg: #1e293b;
+    --card-border: #334155;
+    --card-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.4);
+    --filter-bar-bg: #1e293b;
+    --filter-border: #334155;
+    --btn-icon-bg: #334155;
+    --btn-icon-hover: #475569;
+    --footer-bg: rgba(30, 41, 59, 0.8);
+    --modal-bg: #1e293b;
+    --stat-card-bg: #1e293b;
+    --progress-bg: #334155;
+}
+
+body.glass {
+    --bg-gradient-start: #1a1a2e;
+    --bg-gradient-end: #16213e;
+    --app-bg: rgba(255, 255, 255, 0.25);
+    --app-blur: blur(20px);
+    --header-bg: rgba(255, 255, 255, 0.3);
+    --text-primary: #ffffff;
+    --text-secondary: #f1f5f9;
+    --card-bg: rgba(255, 255, 255, 0.2);
+    --card-border: rgba(255, 255, 255, 0.3);
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    --filter-bar-bg: rgba(255, 255, 255, 0.2);
+    --filter-border: rgba(255, 255, 255, 0.3);
+    --btn-icon-bg: rgba(255, 255, 255, 0.2);
+    --btn-icon-hover: rgba(255, 255, 255, 0.35);
+    --footer-bg: rgba(255, 255, 255, 0.15);
+    --modal-bg: rgba(30, 30, 40, 0.95);
+    --stat-card-bg: rgba(255, 255, 255, 0.18);
+    --progress-bg: rgba(255, 255, 255, 0.3);
+}
+
+body {
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    min-height: 120vh;
+    padding: 1.5rem;
+    transition: background 0.3s ease, color 0.2s ease;
+}
+
+.app-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--app-bg);
+    backdrop-filter: var(--app-blur);
+    border-radius: 2rem;
+    box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transition: background 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+.app-header {
+    background: var(--header-bg);
+    padding: 1rem 1.8rem;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.theme-switcher {
+    display: flex;
+    gap: 8px;
+    background: var(--btn-icon-bg);
+    padding: 4px 8px;
+    border-radius: 2.5rem;
+}
+
+.theme-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 2rem;
+    transition: all 0.2s;
+    color: var(--text-primary);
+}
+
+.theme-btn:hover {
+    background: var(--btn-icon-hover);
+    transform: scale(1.05);
+}
+
+.app-header h1 {
+    font-size: 1.7rem;
+    background: linear-gradient(135deg, #1e293b, #3b82f6);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: -0.4px;
+}
+
+.btn-icon-group {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-icon {
+    background: var(--btn-icon-bg);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 2.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+    height: 2.8rem;
+}
+
+.btn-icon i {
+    color: #3b82f6;
+}
+
+.btn-icon:hover {
+    background: var(--btn-icon-hover);
+    transform: translateY(-2px);
+}
+
+.nav-tabs {
+    display: block;
+    gap: 0.6rem;
+    margin-top: 1.2rem;
+    flex-wrap: wrap;
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    padding: 0.5rem 1.4rem;
+    font-weight: 600;
+    border-radius: 2.5rem;
+    cursor: pointer;
+    transition: 0.2s;
+    color: var(--text-secondary);
+}
+
+.nav-btn.active {
+    background: #3b82f6;
+    color: white;
+    box-shadow: 0 6px 12px -6px #3b82f680;
+}
+
+.page {
+    display: none;
+    padding: 1.5rem;
+    animation: pageEnter 0.3s ease;
+}
+
+.page.active-page {
+    display: block;
+}
+
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-bottom: 1.8rem;
+    background: var(--filter-bar-bg);
+    padding: 0.8rem 1.2rem;
+    border-radius: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.filter-bar input,
+.filter-bar select {
+    padding: 0.6rem 1rem;
+    border-radius: 2rem;
+    border: 1px solid var(--filter-border);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    flex: 1;
+    min-width: 130px;
+    outline: none;
+    transition: 0.2s;
+}
+
+.filter-bar input:focus,
+.filter-bar select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px #93c5fd;
+}
+
+.tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.2rem;
+}
+
+.task-card {
+    background: var(--card-bg);
+    border-radius: 1.5rem;
+    padding: 1.2rem;
+    transition: all 0.25s ease;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+}
+
+.task-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 30px -14px rgba(0, 0, 0, 0.2);
+    border-color: #3b82f6;
+}
+
+.task-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.badge {
+    padding: 0.2rem 0.7rem;
+    border-radius: 2rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.priority-high {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.priority-medium {
+    background: #fff3e3;
+    color: #b45309;
+}
+
+.priority-low {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+body.dark .priority-high {
+    background: #7f1a1a;
+    color: #fecaca;
+}
+
+body.dark .priority-medium {
+    background: #7c2d12;
+    color: #fed7aa;
+}
+
+body.dark .priority-low {
+    background: #14532d;
+    color: #bbf7d0;
+}
+
+body.glass .priority-high {
+    background: rgba(185, 28, 28, 0.6);
+    color: white;
+}
+
+body.glass .priority-medium {
+    background: rgba(180, 83, 9, 0.6);
+    color: white;
+}
+
+body.glass .priority-low {
+    background: rgba(21, 128, 61, 0.6);
+    color: white;
+}
+
+.task-details {
+    margin: 10px 0;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.task-details i {
+    width: 20px;
+    color: #3b82f6;
+}
+
+.task-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 0.8rem;
+}
+
+.task-actions button {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    transition: background 0.1s;
+    color: var(--text-secondary);
+}
+
+.task-actions button:hover {
+    background: var(--btn-icon-hover);
+}
+
+.btn-add {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.8rem;
+    border-radius: 3rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+.btn-add:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+}
+
+.modal,
+.info-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content,
+.info-modal-content {
+    background: var(--modal-bg);
+    max-width: 500px;
+    width: 90%;
+    border-radius: 2rem;
+    padding: 1.8rem;
+    max-height: 85vh;
+    overflow: auto;
+    color: var(--text-primary);
+    border: 1px solid var(--card-border);
+}
+
+.info-modal-content {
+    text-align: center;
+}
+
+.info-avatar {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.info-card {
+    background: var(--btn-icon-bg);
+    border-radius: 1.5rem;
+    padding: 12px 20px;
+    min-width: 100px;
+    color: var(--text-primary);
+}
+
+.stats-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--stat-card-bg);
+    border-radius: 1.5rem;
+    padding: 1rem;
+    flex: 1;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    color: var(--text-primary);
+    backdrop-filter: blur(4px);
+}
+
+.stats-card-bg {
+    background: var(--stat-card-bg) !important;
+    color: var(--text-primary);
+}
+
+.progress-bar-bg {
+    background: var(--progress-bg);
+    border-radius: 1rem;
+    height: 10px;
+    margin: 8px 0;
+}
+
+.progress-fill {
+    background: #3b82f6;
+    width: 0%;
+    height: 10px;
+    border-radius: 1rem;
+    transition: width 0.4s;
+}
+
+.custom-footer {
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.75rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    color: var(--text-secondary);
+    background: var(--footer-bg);
+}
+
+.custom-footer span {
+    font-weight: 600;
+    color: #2563eb;
+}
+
+.center-toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1e293b;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 48px;
+    font-weight: 500;
+    z-index: 1200;
+    box-shadow: 0 20px 35px -10px black;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+    animation: popIn 0.2s ease-out;
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 0.8rem;
+    }
+    .btn-icon {
+        padding: 5px 12px;
+    }
+    .center-toast {
+        font-size: 0.85rem;
+        white-space: normal;
+        text-align: center;
+        width: 80%;
+    }
+}
+
+.img {
+    height: 4rem;
+    width: 4rem;
+    border-radius: 50%;
+    margin: 1rem;
+    display: flex;
+}
+
+.logo-sekolah {
+    border-radius: 50%;
+    height: 10rem;
+    width: 10rem;
+    margin: auto;
+    padding: 2rem;
+}
+
+input, select, textarea {
+    color-scheme: light dark;
+}
+
+body.glass input, body.glass select, body.glass textarea {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgb(0, 0, 0);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+body.glass input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+    </style>
+</head>
+
+<body>
+<div class="app-container">
+    <div class="app-header">
+        <div class="header-top">
+            <h1><i class="fas fa-check-circle" style="color:#3b82f6;"></i> Produktiflah</h1>
+            <div class="header-actions">
+                <div class="theme-switcher">
+                    <button class="theme-btn" data-theme="light" title="Mode Terang"><i class="fas fa-sun"></i></button>
+                    <button class="theme-btn" data-theme="glass" title="Mode Glass (iOS)"><i class="fas fa-moon"></i></button>
+                </div>
+                <button id="infoBtn" class="btn-icon"><i class="fas fa-users"></i> Info Tim</button>
+            </div>
+        </div>
+        <div class="nav-tabs">
+            <button class="nav-btn active" data-page="tasks"><i class="fas fa-tasks"></i> Aktif</button>
+            <button class="nav-btn" data-page="completed"><i class="fas fa-check-double"></i> Selesai</button>
+            <button class="nav-btn" data-page="stats"><i class="fas fa-chart-line"></i> Statistik</button>
+        </div>
+    </div>
+
+    <!-- Halaman Tugas Aktif -->
+    <div id="tasksPage" class="page active-page">
+        <button id="openAddModalBtn" class="btn-add"><i class="fas fa-plus"></i> Tambah Tugas</button>
+        <div class="filter-bar">
+            <input type="text" id="searchActive" placeholder="Cari tugas...">
+            <select id="filterPriorityActive">
+                <option value="all">Semua Prioritas</option>
+                <option value="high">Tinggi</option>
+                <option value="medium">Sedang</option>
+                <option value="low">Rendah</option>
+            </select>
+            <select id="filterCategoryActive">
+                <option value="all">Semua Kategori</option>
+            </select>
+        </div>
+        <div id="activeTasksContainer" class="tasks-grid"></div>
+    </div>
+
+    <!-- Halaman Selesai -->
+    <div id="completedPage" class="page">
+        <div class="filter-bar">
+            <input type="text" id="searchCompleted" placeholder="Cari tugas selesai...">
+            <select id="filterPriorityCompleted">
+                <option value="all">Semua Prioritas</option>
+                <option value="high">Tinggi</option>
+                <option value="medium">Sedang</option>
+                <option value="low">Rendah</option>
+            </select>
+            <select id="filterCategoryCompleted">
+                <option value="all">Semua Kategori</option>
+            </select>
+        </div>
+        <button id="clearAllCompletedBtn" class="btn-icon" style="background:#676666; color:#ffffff;"><i class="fas fa-trash-alt"></i> Hapus Semua Selesai</button>
+        <div style="margin-top: 1rem;" id="completedTasksContainer" class="tasks-grid"></div>
+    </div>
+
+    <!-- Halaman Statistik -->
+    <div id="statsPage" class="page">
+        <div class="stats-grid">
+            <div class="stat-card"><i class="fas fa-list"></i> <h3 id="totalTasksStat">0</h3><p>Total Tugas</p></div>
+            <div class="stat-card"><i class="fas fa-check-circle"></i> <h3 id="completedTasksStat">0</h3><p>Selesai</p></div>
+            <div class="stat-card"><div class="progress-bar-bg"><div class="progress-fill" id="progressFill"></div></div><p id="completionPercent">0%</p></div>
+        </div>
+        <div style="background:white; border-radius:1.5rem; padding:1rem; margin-bottom:1rem;" class="stats-card-bg">
+            <h3>Per Kategori</h3>
+            <div id="categorySummary"></div>
+        </div>
+        <div>
+            <h3>Kelola Kategori <button id="addCategoryBtn" style="float:right; background:#3b82f6; color:white; border:none; border-radius:2rem; padding:5px 12px;">+ Tambah</button></h3>
+            <br>
+            <div id="categoriesList"></div>
+        </div>
+    </div>
+
+    <!-- FOOTER KREDIT TIM -->
+    <div class="custom-footer">
+        © 2026 · Design by students of Prisma Nusanta Vocational School
+        <br>
+        <br>
+        • <span>Farhan</span> • <span>Darul</span> • <span>Melinda</span> • <span>Dea</span>
+        <br>
+        <br><small> -Hiduplah Bersenang senanglah dan bekerjalah-  </small>
+        <br>
+    </div>
+</div>
+
+<!-- Modal Tambah/Edit -->
+<div id="taskModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle">Tugas Baru</h3>
+        <input type="text" id="taskTitleInput" placeholder="Nama tugas" style="width:100%; margin:8px 0; padding:10px; border-radius:1rem; border:1px solid #cbd5e1;">
+        <input type="date" id="taskDueDate" style="width:100%; margin:8px 0; padding:10px; border-radius:1rem;">
+        <input type="number" id="taskEstimate" placeholder="Estimasi waktu (menit)" style="width:100%; margin:8px 0; padding:10px; border-radius:1rem; border:1px solid #cbd5e1;">
+        <select id="taskPriority" style="width:100%; margin:8px 0; padding:10px; border-radius:1rem;">
+            <option value="low">Rendah</option>
+            <option value="medium">Sedang</option>
+            <option value="high">Tinggi</option>
+        </select>
+        <select id="taskCategory" style="width:100%; margin:8px 0; padding:10px; border-radius:1rem;"></select>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button id="closeModalBtn" style="background:#e2e8f0; border:none; padding:8px 16px; border-radius:2rem;">Batal</button>
+            <button id="saveTaskBtn" style="background:#3b82f6; color:white; border:none; padding:8px 16px; border-radius:2rem;">Simpan</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Info Tim -->
+<div id="infoModal" class="info-modal">
+    <div class="info-modal-content">
+        <img class="logo-sekolah" src="foto/WhatsApp Image 2026-04-25 at 09.25.58.jpeg" alt="">
+        <h3><i class="fas fa-code"></i> Made by students of Prisma Nusanta Vocational School</h3>
+        <br>
+        <div class="info-avatar">
+            <div class="info-card"><img class="img" src="foto/orang-ganteng.jpeg" alt=""><i class="fas fa-user-astronaut"></i> <strong>Farhan</strong><br>Frontend</div>
+            <div class="info-card"><img class="img" src="foto/darul.jpeg" alt=""><i class="fas fa-database"></i> <strong>Darul</strong><br>Backend</div>
+            <div class="info-card"><img class="img" src="foto/meli.jpeg" alt=""><i class="fas fa-palette"></i> <strong>Melinda</strong><br>UI/UX</div>
+            <div class="info-card"><img class="img" src="foto/dea.jpeg" alt=""><i class="fas fa-mobile-alt"></i> <strong>Dea</strong><br>Mobile</div>
+        </div>
+        <br>
+        <p style="margin-top: 10px;"> Produktiflah, aplikasi To-Do List dengan penyimpanan lokal </p>
+        <br>
+        <button id="closeInfoBtn" style="background:#3b82f6; color:white; border:none; padding:8px 20px; border-radius:2rem; margin-top:20px;">Tutup</button>
+    </div>
+</div>
+
+<script>
+    // ========== DATA ==========
+let tasks = [];
+let categories = ["Umum", "Pribadi", "Pekerjaan", "Belanja"];
+let editId = null;
+let currentPage = "tasks";
+
+function saveToLocal() {
+    localStorage.setItem("taskflow_tasks", JSON.stringify(tasks));
+    localStorage.setItem("taskflow_categories", JSON.stringify(categories));
+}
+
+function loadFromLocal() {
+    const storedTasks = localStorage.getItem("taskflow_tasks");
+    const storedCats = localStorage.getItem("taskflow_categories");
+
+    if (storedTasks) {
+        tasks = JSON.parse(storedTasks);
+    } else {
+        tasks = [];
+    }
+
+    if (storedCats) {
+        categories = JSON.parse(storedCats);
+    } else {
+        categories = ["Umum", "Pribadi", "Pekerjaan", "Belanja"];
+    }
+
+    // pastikan semua task punya createdAt
+    tasks.forEach((task, index) => {
+
+        if (!task.createdAt) {
+
+            // beri timestamp berbeda agar urutan stabil
+            task.createdAt = Date.now() - ((tasks.length - index) * 1000);
+        }
+
+        if (task.completed === undefined) {
+            task.completed = false;
+        }
+    });
+
+    // sorting terbaru di atas
+    tasks.sort((a, b) => b.createdAt - a.createdAt);
+
+    saveToLocal();
+}
+function showCenterPopup(message, icon = "✅") {
+    let old = document.querySelector(".center-toast");
+    if (old) old.remove();
+    let div = document.createElement("div");
+    div.className = "center-toast";
+    div.innerHTML = `<i class="fas ${icon === '✅' ? 'fa-check-circle' : 'fa-info-circle'}"></i> ${message}`;
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 1800);
+}
+
+function updateCategoryDropdowns() {
+    const filterCatActive = document.getElementById("filterCategoryActive");
+    const filterCatCompleted = document.getElementById("filterCategoryCompleted");
+    const modalCat = document.getElementById("taskCategory");
+    const render = (selectEl, includeAll = true) => {
+        let oldVal = selectEl.value;
+        selectEl.innerHTML = includeAll ? '<option value="all">Semua Kategori</option>' : '';
+        categories.forEach(cat => {
+            let opt = document.createElement("option");
+            opt.value = cat;
+            opt.innerText = cat;
+            selectEl.appendChild(opt);
+        });
+        if (includeAll && oldVal && oldVal !== "all" && categories.includes(oldVal)) selectEl.value = oldVal;
+        else if (!includeAll && categories.includes(oldVal)) selectEl.value = oldVal;
+        else if (includeAll && oldVal === "all") selectEl.value = "all";
+        else selectEl.value = categories[0] || "Umum";
+    };
+    if (filterCatActive) render(filterCatActive, true);
+    if (filterCatCompleted) render(filterCatCompleted, true);
+    if (modalCat) render(modalCat, false);
+}
+
+function sortTasksByNewest(arr) {
+    return [...arr].sort((a, b) => b.createdAt - a.createdAt);
+}
+
+function renderActiveTasks() {
+    let search = document.getElementById("searchActive").value.toLowerCase();
+    let priority = document.getElementById("filterPriorityActive").value;
+    let category = document.getElementById("filterCategoryActive").value;
+    let filtered = tasks.filter(t => !t.completed);
+    if (search) filtered = filtered.filter(t => t.title.toLowerCase().includes(search));
+    if (priority !== "all") filtered = filtered.filter(t => t.priority === priority);
+    if (category !== "all") filtered = filtered.filter(t => t.category === category);
+    filtered = sortTasksByNewest(filtered);
+    const container = document.getElementById("activeTasksContainer");
+    if (filtered.length === 0) {
+        container.innerHTML = `<div class="empty-state" style="text-align:center; padding:2rem;">Tidak ada tugas aktif silahkan Tambah tugas, atau beristirahalah</div>`;
+        return;
+    }
+    container.innerHTML = filtered.map(task => taskCardHtml(task)).join("");
+    attachEvents();
+}
+
+function renderCompletedTasks() {
+    let search = document.getElementById("searchCompleted").value.toLowerCase();
+    let priority = document.getElementById("filterPriorityCompleted").value;
+    let category = document.getElementById("filterCategoryCompleted").value;
+    let filtered = tasks.filter(t => t.completed);
+    if (search) filtered = filtered.filter(t => t.title.toLowerCase().includes(search));
+    if (priority !== "all") filtered = filtered.filter(t => t.priority === priority);
+    if (category !== "all") filtered = filtered.filter(t => t.category === category);
+    filtered = sortTasksByNewest(filtered);
+    const container = document.getElementById("completedTasksContainer");
+    if (filtered.length === 0) {
+        container.innerHTML = `<div class="empty-state" style="text-align:center; padding:2rem;"> Belum ada tugas selesai </div>`;
+        return;
+    }
+    container.innerHTML = filtered.map(task => taskCardHtml(task)).join("");
+    attachEvents();
+}
+
+function formatDate(timestamp) {
+    if (!timestamp) return "-";
+    let d = new Date(timestamp);
+    return `${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+}
+
+function taskCardHtml(task) {
+    const priorityClass = task.priority === 'high' ? 'priority-high' : (task.priority === 'medium' ? 'priority-medium' : 'priority-low');
+    const priorityText = task.priority === 'high' ? 'Tinggi' : (task.priority === 'medium' ? 'Sedang' : 'Rendah');
+    return `
+        <div class="task-card" data-id="${task.id}">
+            <div class="task-title">
+                <span>${escapeHtml(task.title)}</span>
+                <span class="badge ${priorityClass}">${priorityText}</span>
+            </div>
+            <div class="task-details">
+                <div><i class="far fa-calendar-alt"></i> Deadline: ${task.dueDate || '-'}</div>
+                <div><i class="fas fa-hourglass-half"></i> Estimasi: ${task.estimateTime ? task.estimateTime + ' menit' : '-'}</div>
+                <div><i class="far fa-clock"></i> Dibuat: ${formatDate(task.createdAt)}</div>
+                <div><i class="far fa-folder"></i> Kategori: ${escapeHtml(task.category)}</div>
+            </div>
+            <div class="task-actions">
+                <button class="complete-task" title="${task.completed ? 'Batal selesai' : 'Selesai'}"><i class="fas ${task.completed ? 'fa-undo-alt' : 'fa-check-circle'}"></i></button>
+                <button class="edit-task" title="Edit"><i class="fas fa-edit"></i></button>
+                <button class="delete-task" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </div>
+    `;
+}
+
+function escapeHtml(str) {
+    return str.replace(/[&<>]/g, function (m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+function attachEvents() {
+    document.querySelectorAll(".complete-task").forEach(btn => {
+        btn.onclick = (e) => {
+            const card = btn.closest(".task-card");
+            const id = parseInt(card.dataset.id);
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                saveToLocal();
+                refreshPage();
+                showCenterPopup(task.completed ? "✨ Tugas selesai! ✨" : "↩️ Dikembalikan ke aktif", task.completed ? "✅" : "🔄");
+            }
+        };
+    });
+    document.querySelectorAll(".edit-task").forEach(btn => {
+        btn.onclick = (e) => {
+            const id = parseInt(btn.closest(".task-card").dataset.id);
+            const task = tasks.find(t => t.id === id);
+            if (task) openEditModal(task);
+        };
+    });
+    document.querySelectorAll(".delete-task").forEach(btn => {
+        btn.onclick = (e) => {
+            if (confirm("Hapus tugas ini?")) {
+                const id = parseInt(btn.closest(".task-card").dataset.id);
+                tasks = tasks.filter(t => t.id !== id);
+                saveToLocal();
+                refreshPage();
+                showCenterPopup("🗑 Tugas dihapus", "🗑");
+            }
+        };
+    });
+}
+
+function refreshPage() {
+    if (currentPage === "tasks") renderActiveTasks();
+    else if (currentPage === "completed") renderCompletedTasks();
+    else if (currentPage === "stats") renderStats();
+    updateCategoryDropdowns();
+}
+
+function renderStats() {
+    const total = tasks.length;
+    const completed = tasks.filter(t => t.completed).length;
+    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+    document.getElementById("totalTasksStat").innerText = total;
+    document.getElementById("completedTasksStat").innerText = completed;
+    document.getElementById("completionPercent").innerHTML = `${percent}% selesai`;
+    document.getElementById("progressFill").style.width = `${percent}%`;
+    let catMap = new Map();
+    tasks.forEach(t => {
+        if (!catMap.has(t.category)) catMap.set(t.category, { total: 0, done: 0 });
+        let d = catMap.get(t.category);
+        d.total++;
+        if (t.completed) d.done++;
+    });
+    let summaryHtml = "";
+    for (let [cat, d] of catMap.entries()) {
+        let pct = d.total === 0 ? 0 : Math.round((d.done / d.total) * 100);
+        summaryHtml += `<div><b>${escapeHtml(cat)}</b> ${d.done}/${d.total} (${pct}%)<div class="progress-bar-bg"><div class="progress-fill" style="width:${pct}%; background:#3b82f6;"></div></div></div>`;
+    }
+    document.getElementById("categorySummary").innerHTML = summaryHtml || "Belum ada kategori";
+    let catsHtml = "";
+    categories.forEach(cat => {
+        catsHtml += `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--card-border);">
+                        <span>🏷️ ${escapeHtml(cat)}</span>
+                        <button class="deleteCatBtn" data-cat="${escapeHtml(cat)}" style="background:none; border:none; color:#b91c1c; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                     </div>`;
+    });
+    document.getElementById("categoriesList").innerHTML = catsHtml;
+    document.querySelectorAll(".deleteCatBtn").forEach(btn => {
+        btn.onclick = () => {
+            let catName = btn.getAttribute("data-cat");
+            if (tasks.some(t => t.category === catName)) {
+                showCenterPopup(`❌ Kategori "${catName}" masih dipakai`, "❌");
+                return;
+            }
+            if (confirm(`Hapus kategori "${catName}"?`)) {
+                categories = categories.filter(c => c !== catName);
+                saveToLocal();
+                refreshPage();
+                renderStats();
+                showCenterPopup(`Kategori "${catName}" dihapus`, "🗑");
+            }
+        };
+    });
+}
+
+function openAddModal() {
+    editId = null;
+    document.getElementById("modalTitle").innerText = "Tambah Tugas Baru";
+    document.getElementById("taskTitleInput").value = "";
+    document.getElementById("taskDueDate").value = "";
+    document.getElementById("taskEstimate").value = "";
+    document.getElementById("taskPriority").value = "medium";
+    updateCategoryDropdowns();
+    document.getElementById("taskCategory").value = categories[0];
+    document.getElementById("taskModal").style.display = "flex";
+}
+
+function openEditModal(task) {
+    editId = task.id;
+    document.getElementById("modalTitle").innerText = "Edit Tugas";
+    document.getElementById("taskTitleInput").value = task.title;
+    document.getElementById("taskDueDate").value = task.dueDate || "";
+    document.getElementById("taskEstimate").value = task.estimateTime || "";
+    document.getElementById("taskPriority").value = task.priority;
+    updateCategoryDropdowns();
+    document.getElementById("taskCategory").value = task.category;
+    document.getElementById("taskModal").style.display = "flex";
+}
+
+function closeModal() {
+    document.getElementById("taskModal").style.display = "none";
+    editId = null;
+}
+
+function saveTask() {
+    let title = document.getElementById("taskTitleInput").value.trim();
+    if (!title) {
+        showCenterPopup("Nama tugas harus diisi", "⚠️");
+        return;
+    }
+    let dueDate = document.getElementById("taskDueDate").value;
+    let estimateTime = parseInt(document.getElementById("taskEstimate").value);
+    if (isNaN(estimateTime)) estimateTime = null;
+    let priority = document.getElementById("taskPriority").value;
+    let category = document.getElementById("taskCategory").value;
+    if (editId) {
+        let idx = tasks.findIndex(t => t.id === editId);
+        if (idx !== -1) {
+            tasks[idx] = { ...tasks[idx], title, dueDate, estimateTime, priority, category };
+            saveToLocal();
+            refreshPage();
+            showCenterPopup("✏️ Tugas diperbarui", "✏️");
+        }
+    } else {
+        let newTask = {
+            id: Date.now(),
+            title,
+            dueDate,
+            estimateTime,
+            priority,
+            category,
+            completed: false,
+            createdAt: Date.now()
+        };
+        tasks.unshift(newTask);
+        saveToLocal();
+        refreshPage();
+        showCenterPopup("➕ Tugas baru ditambahkan", "➕");
+    }
+    closeModal();
+}
+
+// ========== THEME MANAGEMENT ==========
+function initTheme() {
+    const savedTheme = localStorage.getItem("produktiflah_theme") || "light";
+    document.body.classList.add(savedTheme);
+    updateActiveThemeButton(savedTheme);
+}
+
+function setTheme(theme) {
+    document.body.classList.remove("light", "dark", "glass");
+    document.body.classList.add(theme);
+    localStorage.setItem("produktiflah_theme", theme);
+    updateActiveThemeButton(theme);
+}
+
+function updateActiveThemeButton(theme) {
+    document.querySelectorAll(".theme-btn").forEach(btn => {
+        if (btn.getAttribute("data-theme") === theme) {
+            btn.style.opacity = "1";
+            btn.style.fontWeight = "bold";
+            btn.style.transform = "scale(1.05)";
+        } else {
+            btn.style.opacity = "0.7";
+            btn.style.fontWeight = "normal";
+            btn.style.transform = "scale(1)";
+        }
+    });
+}
+
+// ========== EVENT LISTENERS ==========
+document.addEventListener("DOMContentLoaded", () => {
+    loadFromLocal();
+    updateCategoryDropdowns();
+    renderActiveTasks();
+    renderCompletedTasks();
+    renderStats();
+    initTheme();
+
+    document.getElementById("openAddModalBtn").onclick = openAddModal;
+    document.getElementById("saveTaskBtn").onclick = saveTask;
+    document.getElementById("closeModalBtn").onclick = closeModal;
+    document.getElementById("clearAllCompletedBtn").onclick = () => {
+        if (confirm("Hapus semua tugas yang sudah selesai?")) {
+            tasks = tasks.filter(t => !t.completed);
+            saveToLocal();
+            refreshPage();
+            showCenterPopup("🧹 Semua tugas selesai dihapus", "🧹");
+        }
+    };
+    document.getElementById("addCategoryBtn").onclick = () => {
+        let newCat = prompt("Nama kategori baru:");
+        if (newCat && newCat.trim() && !categories.includes(newCat.trim())) {
+            categories.push(newCat.trim());
+            saveToLocal();
+            updateCategoryDropdowns();
+            renderStats();
+            refreshPage();
+            showCenterPopup(`🏷️ Kategori "${newCat}" ditambahkan`, "🏷️");
+        } else if (categories.includes(newCat?.trim())) showCenterPopup("Kategori sudah ada", "⚠️");
+    };
+
+    const infoModal = document.getElementById("infoModal");
+    document.getElementById("infoBtn").onclick = () => infoModal.style.display = "flex";
+    document.getElementById("closeInfoBtn").onclick = () => infoModal.style.display = "none";
+    window.onclick = (e) => {
+        if (e.target === infoModal) infoModal.style.display = "none";
+        if (e.target === document.getElementById("taskModal")) closeModal();
+    };
+
+    document.getElementById("searchActive").addEventListener("input", renderActiveTasks);
+    document.getElementById("filterPriorityActive").addEventListener("change", renderActiveTasks);
+    document.getElementById("filterCategoryActive").addEventListener("change", renderActiveTasks);
+    document.getElementById("searchCompleted").addEventListener("input", renderCompletedTasks);
+    document.getElementById("filterPriorityCompleted").addEventListener("change", renderCompletedTasks);
+    document.getElementById("filterCategoryCompleted").addEventListener("change", renderCompletedTasks);
+
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentPage = btn.dataset.page;
+            document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
+            if (currentPage === "tasks") document.getElementById("tasksPage").classList.add("active-page");
+            else if (currentPage === "completed") document.getElementById("completedPage").classList.add("active-page");
+            else if (currentPage === "stats") document.getElementById("statsPage").classList.add("active-page");
+            refreshPage();
+        };
+    });
+
+    document.querySelectorAll(".theme-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const theme = btn.getAttribute("data-theme");
+            setTheme(theme);
+        });
+    });
+});
+</script>
+</body>
+</html>
